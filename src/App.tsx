@@ -1,7 +1,7 @@
-import React from "react";
-import  { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { FaEnvelope, FaPhone, FaHome } from "react-icons/fa"; // Import icons
+import emailjs from 'emailjs-com'; // Import emailjs
 
 const images = [
   "https://i.ibb.co/DYDx3fd/IMG-1879.jpg",
@@ -85,15 +85,20 @@ const Layout = () => (
             className="h-10 w-10 rounded-full"
           />
         </Link>
-        <h1 className="text-xl font-bold">Image Gallery</h1>
+        <Link to="/">
+          <h1 className="text-xl font-bold">My Gallery</h1>
+        </Link>
+       
+        
       </div>
       <div className="flex items-center space-x-4">
-        <Link to="/contact" className="text-blue-500">
+        <Link to="/contact" className="text-black text-xl font-bold">
           Contact
         </Link>
       </div>
     </header>
     <Outlet />
+    <Footer /> {/* Add Footer component here */}
   </div>
 );
 
@@ -116,85 +121,152 @@ const Gallery = () => (
 
 // Contact Page Component with Icons
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState<{ fullName?: string; email?: string; message?: string }>({});
+  const [successMessage, setSuccessMessage] = useState("");
+
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    const handleResize = () => {
+      document.body.style.overflow = window.innerWidth < 768 ? "auto" : "hidden";
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
     return () => {
-      document.body.style.overflow = ""; // Reset overflow when component unmounts
+      document.body.style.overflow = "";
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
+  const validateForm = () => {
+    const { fullName, email, message } = formData;
+    const newErrors: { fullName?: string; email?: string; message?: string } = {};
+    if (!fullName) newErrors.fullName = "Name is required.";
+    if (!email) newErrors.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Email is invalid.";
+    if (!message) newErrors.message = "Message is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const sendEmail = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    if (validateForm()) {
+      emailjs.send("service_6cwp7dd", "template_6gt6q1r", {
+        from_name: formData.fullName,
+        from_email: formData.email,
+        message: formData.message,
+      }, "RqXDuvjjoe4wI0juE")
+      .then(() => {
+        setSuccessMessage("Message sent successfully!");
+        console.log("Email successfully sent!");
+      })
+      .catch((error) => {
+        setSuccessMessage("Failed to send the message, please try again.");
+        console.error("Error sending email:", error);
+      });
+      
+    }
+  };
+
   return (
     <div
-      className="relative flex items-center justify-center h-[67vh]  bg-cover bg-center text-white"
+      className="relative flex items-center justify-center min-h-screen bg-cover bg-center text-white px-4 md:px-8"
       style={{
-        backgroundImage:
-          "url('https://i.ibb.co/N6Qdm0w/Whats-App-Image-2024-10-28-at-00-11-39-871ec12b.jpg')",
+        backgroundImage: "url('https://i.ibb.co/N6Qdm0w/Whats-App-Image-2024-10-28-at-00-11-39-871ec12b.jpg')",
       }}
     >
-      {/* Dark overlay layer */}
       <div className="absolute inset-0 bg-black opacity-60"></div>
-
-      {/* Main content */}
-      <div className="relative flex bg-black bg-opacity-50 p-8 rounded-lg shadow-lg max-w-4xl w-full">
-        {/* Left Section - Contact Information */}
-        <div className="w-1/2 p-6 space-y-6">
-          <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
+      <div className="relative flex flex-col lg:flex-row bg-black bg-opacity-50 p-4 md:p-8 rounded-lg shadow-lg max-w-4xl w-full space-y-6 lg:space-y-0">
+        <div className="lg:w-1/2 p-6 space-y-6 ">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4">Contact Us</h2>
           <p className="text-gray-300 mb-6">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            If you need help, have questions or just want to say hello, feel free to get in touch.
           </p>
           <div className="flex items-start mb-4">
-            <FaHome className="text-2xl text-teal-500 mr-4" />
+            <FaHome className="text-2xl text-white mr-4 mt-1" />
             <div>
-              <h4 className="text-xl font-semibold text-teal-400">Address</h4>
-              <p>4671 Sugar Camp Road, Owatonna, Minnesota, 55060</p>
+              <h4 className="text-lg lg:text-xl font-semibold text-white">Address</h4>
+              <p className="text-gray-300">Kigali, Rwanda</p>
             </div>
           </div>
           <div className="flex items-start mb-4">
-            <FaPhone className="text-2xl text-teal-500 mr-4" />
+            <FaPhone className="text-2xl text-white mr-4 mt-2" />
             <div>
-              <h4 className="text-xl font-semibold text-teal-400">Phone</h4>
-              <p>571-457-2321</p>
+              <h4 className="text-lg lg:text-xl font-semibold text-white">Phone</h4>
+              <p className="text-gray-300">+250788780718</p>
             </div>
           </div>
           <div className="flex items-start">
-            <FaEnvelope className="text-2xl text-teal-500 mr-4" />
+            <FaEnvelope className="text-2xl text-white mr-4 mt-1" />
             <div>
-              <h4 className="text-xl font-semibold text-teal-400">Email</h4>
-              <p>ntamerrwael@mfano.ga</p>
+              <h4 className="text-lg lg:text-xl font-semibold text-white">Email</h4>
+              <p className="text-gray-300">vanessahirwa5@gmail.com</p>
             </div>
           </div>
         </div>
 
-        {/* Right Section - Message Form */}
-        <div className="w-1/2 p-6 bg-white text-gray-800 rounded-lg shadow-lg">
-          <h3 className="text-3xl font-semibold mb-6 text-center">Send Message</h3>
-          <form className="space-y-4">
+        <div className="lg:w-1/2 p-6 bg-white text-gray-800 rounded-lg shadow-lg">
+          <h3 className="text-2xl lg:text-3xl font-semibold mb-6 text-center">Send Message</h3>
+          <form className="space-y-4" onSubmit={sendEmail}>
             <input
               type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
               placeholder="Full Name"
-              className="w-full p-3 border border-gray-300 rounded"
+              className={`w-full p-3 border-0 border-b-2 rounded focus:outline-none focus:border-black ${errors.fullName ? "border-red-500" : "border-gray-300"}`}
             />
+            {errors.fullName && <p className="text-red-500">{errors.fullName}</p>}
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               placeholder="Email"
-              className="w-full p-3 border border-gray-300 rounded"
+              className={`w-full p-3 border-0 border-b-2 rounded ${errors.email ? "border-red-500" : "border-gray-300"}`}
             />
+            {errors.email && <p className="text-red-500">{errors.email}</p>}
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleInputChange}
               placeholder="Type your Message..."
-              className="w-full p-3 border border-gray-300 rounded h-32 resize-none"
+              className={`w-full p-3 border-0 border-b-2 h-24 resize-none ${errors.message ? "border-red-500" : "border-gray-300"}`}
             />
+            {errors.message && <p className="text-red-500">{errors.message}</p>}
             <button
               type="submit"
-              className="w-full py-3 bg-teal-500 text-white font-semibold rounded hover:bg-teal-600"
+              className="w-full py-3 bg-black text-white font-semibold rounded hover:bg-white hover:text-black hover:border hover:border-black"
             >
               Send
             </button>
           </form>
+          {successMessage && <p className="text-green-500 mt-4 text-center">{successMessage}</p>}
         </div>
       </div>
     </div>
   );
 };
+
+
+const Footer = () => (
+  <footer className=" border-t-2 text-center py-4 mt-8">
+    <p>Made with 🖤  by Vanessa</p>
+  </footer>
+);
+
+
 
 // Image Popup Component
 const ImagePopup = () => {
