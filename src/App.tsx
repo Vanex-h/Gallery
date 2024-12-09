@@ -65,6 +65,14 @@ const normal_images = [
   "https://i.ibb.co/LJCzWB9/IMG-1882.jpg",
   "https://i.ibb.co/ynRWJrH/IMG-1892.jpg",
   "https://i.ibb.co/Y0F9xLV/IMG-744.jpg",
+  "https://i.ibb.co/ssWFPQg/IMG-6069-2.jpg",
+  "https://i.ibb.co/DPJJDd8/IMG-6271-2.jpg",
+  "https://i.ibb.co/BNjH8Sx/IMG-6692-2.jpg",
+  "https://i.ibb.co/BsXB2V7/IMG-6597-2.jpg",
+  "https://i.ibb.co/NLc2cFw/IMG-7069-2.jpg",
+  "https://i.ibb.co/k0pcZyQ/IMG-7175.jpg",
+  "https://i.ibb.co/YLTzSrf/IMG-6911-2.jpg",
+  "https://i.ibb.co/Pjcvh43/IMG-6433-2.jpg",
 ];
 const bw_images = [
   "https://i.ibb.co/K5DFyX0/IMG-4145.jpg",
@@ -119,6 +127,14 @@ const bw_images = [
   "https://i.ibb.co/Kyjc7sL/IMG-4497.jpg",
   "https://i.ibb.co/dmRhmQr/IMG-2890.jpg",
   "https://i.ibb.co/wMMcBFc/IMG-744-BW.jpg",
+  "https://i.ibb.co/ySsJc6y/IMG-6069.jpg",
+  "https://i.ibb.co/KrsvCLh/IMG-6271.jpg",
+  "https://i.ibb.co/rk1wxmL/IMG-6692.jpg",
+  "https://i.ibb.co/xswYXbV/IMG-6597.jpg",
+  "https://i.ibb.co/yhhcBmL/IMG-7069.jpg",
+  "https://i.ibb.co/wLSSFsr/IMG-7175-2.jpg",
+  "https://i.ibb.co/fMwpQ8K/IMG-6911.jpg",
+  "https://i.ibb.co/kD0gr1X/IMG-6433.jpg",
 ];
 
 const App = () => {
