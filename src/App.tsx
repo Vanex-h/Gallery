@@ -71,7 +71,7 @@ const normal_images = [
   "https://i.ibb.co/BsXB2V7/IMG-6597-2.jpg",
   "https://i.ibb.co/NLc2cFw/IMG-7069-2.jpg",
   "https://i.ibb.co/k0pcZyQ/IMG-7175.jpg",
-  "https://i.ibb.co/YLTzSrf/IMG-6911-2.jpg",
+  "https://i.ibb.co/yF9r6qZ/IMG-7074-2.jpg",
   "https://i.ibb.co/Pjcvh43/IMG-6433-2.jpg",
 ];
 const bw_images = [
@@ -133,7 +133,7 @@ const bw_images = [
   "https://i.ibb.co/xswYXbV/IMG-6597.jpg",
   "https://i.ibb.co/yhhcBmL/IMG-7069.jpg",
   "https://i.ibb.co/wLSSFsr/IMG-7175-2.jpg",
-  "https://i.ibb.co/fMwpQ8K/IMG-6911.jpg",
+  "https://i.ibb.co/Z6hdBY1/IMG-7074-3.jpg",
   "https://i.ibb.co/kD0gr1X/IMG-6433.jpg",
 ];
 
