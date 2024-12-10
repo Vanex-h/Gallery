@@ -176,28 +176,73 @@ const Layout = () => (
   </div>
 );
 // Image Popup Component
-const ImageModal = ({ image, normal_image, index }: { image: string, normal_image: string, index:number }) => {
+const ImageModal = ({
+  image,
+  normal_image,
+  index,
+}: {
+  image: string;
+  normal_image: string;
+  index: number;
+}) => {
   const [hovered, setHovered] = useState<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(index);
 
   const handleClick = () => {
     setShowPopup(!showPopup);
-  }
+  };
 
   const showNextImage = () => {
     if (currentIndex < normal_images.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     }
-  }
+  };
+
   const showPrevImage = () => {
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
   };
+
+  // Add keyboard event handler
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!showPopup) return;
+
+      switch (event.key) {
+        case "ArrowRight":
+          event.preventDefault();
+          showNextImage();
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          showPrevImage();
+          break;
+        case "Escape":
+          event.preventDefault();
+          handleClick();
+          break;
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Clean up event listener when component unmounts
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showPopup, currentIndex]); // Dependencies ensure latest state is used
+
   return (
     <div>
-      <div className="ml-2 mt-2" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => handleClick()}>
+      <div
+        className="ml-2 mt-2"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onClick={() => handleClick()}
+      >
         <img
           className="h-auto max-w-full cursor-pointer rounded-lg"
           src={hovered ? normal_image : image}
@@ -205,7 +250,16 @@ const ImageModal = ({ image, normal_image, index }: { image: string, normal_imag
         />
       </div>
       {showPopup && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black opacity-75 " onClick={() => handleClick()}>
+        <div
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black/75"
+          onClick={() => handleClick()}
+        >
+          <button
+            className="absolute right-4 top-4 text-2xl text-white"
+            onClick={() => handleClick()}
+          >
+            &times;
+          </button>
           {currentIndex > 0 && (
             <button
               className="absolute left-2 top-1/2 -translate-y-1/2 text-5xl text-white"
@@ -237,8 +291,8 @@ const ImageModal = ({ image, normal_image, index }: { image: string, normal_imag
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 // Gallery Component
 const Gallery = () => {
   return (
@@ -332,7 +386,7 @@ const Contact = () => {
       }}
     >
       <div className="absolute inset-0 bg-black opacity-60"></div>
-      <div className="relative flex w-full max-w-4xl flex-col space-y-6 rounded-lg bg-black p-4 opacity-50 shadow-lg md:p-8 lg:flex-row lg:space-y-0">
+      <div className="relative flex w-full max-w-4xl flex-col space-y-6 rounded-lg bg-black/70 p-4  shadow-lg md:p-8 lg:flex-row lg:space-y-0">
         <div className="space-y-6 p-6 lg:w-1/2 ">
           <h2 className="mb-4 text-3xl font-bold lg:text-4xl">Contact Us</h2>
           <p className="mb-6 text-gray-300">
