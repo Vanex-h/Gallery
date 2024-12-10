@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   Link,
-  Outlet,
-  useNavigate,
-  useParams,
+  Outlet
 } from "react-router-dom";
 import { FaEnvelope, FaPhone, FaHome } from "react-icons/fa"; // Import icons
 import emailjs from "emailjs-com"; // Import emailjs
@@ -143,7 +141,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Gallery />} />
         <Route path="contact" element={<Contact />} />
-        <Route path="image/:index" element={<ImagePopup />} />
+        {/* <Route path="image/:index" element={<ImagePopup />} /> */}
       </Route>,
     ),
   );
@@ -160,7 +158,7 @@ const Layout = () => (
           <img
             src="https://i.ibb.co/p3kHsSx/Whats-App-Image-2024-10-28-at-00-11-39-6d8e8661.jpg"
             alt="Logo"
-            className="h-10 w-10 rounded-full"
+            className="size-10 rounded-full"
           />
         </Link>
         <Link to="/">
@@ -177,28 +175,76 @@ const Layout = () => (
     <Footer /> {/* Add Footer component here */}
   </div>
 );
+// Image Popup Component
+const ImageModal = ({ image, normal_image, index }: { image: string, normal_image: string, index:number }) => {
+  const [hovered, setHovered] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(index);
 
+  const handleClick = () => {
+    setShowPopup(!showPopup);
+  }
+
+  const showNextImage = () => {
+    if (currentIndex < normal_images.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    }
+  }
+  const showPrevImage = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+  return (
+    <div>
+      <div className="ml-2 mt-2" onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} onClick={() => handleClick()}>
+        <img
+          className="h-auto max-w-full cursor-pointer rounded-lg"
+          src={hovered ? normal_image : image}
+          alt={`Gallery Image-${image}`}
+        />
+      </div>
+      {showPopup && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black opacity-75 " onClick={() => handleClick()}>
+          {currentIndex > 0 && (
+            <button
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-5xl text-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                showPrevImage();
+              }}
+            >
+              &#8249;
+            </button>
+          )}
+          <img
+            className="max-h-screen max-w-full rounded-lg"
+            src={normal_images[currentIndex] || normal_image}
+            alt={`Popup Image= ${normal_image}`}
+            onClick={(event) => event.stopPropagation()}
+          />
+          {currentIndex < normal_images.length - 1 && (
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-5xl text-white"
+              onClick={(e) => {
+                e.stopPropagation();
+                showNextImage();
+              }}
+            >
+              &#8250;
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 // Gallery Component
 const Gallery = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
   return (
     <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
       {bw_images.map((imageUrl, index) => (
-        <div
-          key={index}
-          className="ml-2 mt-2"
-          onMouseEnter={() => setHoveredIndex(index)}
-          onMouseLeave={() => setHoveredIndex(null)}
-        >
-          <Link to={`/image/${index}`}>
-            <img
-              className="h-auto max-w-full cursor-pointer rounded-lg"
-              src={hoveredIndex === index ? normal_images[index] : imageUrl}
-              alt={`Gallery Image ${index + 1}`}
-            />
-          </Link>
-        </div>
+        <ImageModal image={imageUrl} normal_image={normal_images[index]} key={imageUrl} index={index} />
       ))}
     </div>
   );
@@ -286,7 +332,7 @@ const Contact = () => {
       }}
     >
       <div className="absolute inset-0 bg-black opacity-60"></div>
-      <div className="relative flex w-full max-w-4xl flex-col space-y-6 rounded-lg bg-black bg-opacity-50 p-4 shadow-lg md:p-8 lg:flex-row lg:space-y-0">
+      <div className="relative flex w-full max-w-4xl flex-col space-y-6 rounded-lg bg-black p-4 opacity-50 shadow-lg md:p-8 lg:flex-row lg:space-y-0">
         <div className="space-y-6 p-6 lg:w-1/2 ">
           <h2 className="mb-4 text-3xl font-bold lg:text-4xl">Contact Us</h2>
           <p className="mb-6 text-gray-300">
@@ -377,86 +423,5 @@ const Footer = () => (
   </footer>
 );
 
-// Image Popup Component
-const ImagePopup = () => {
-  const { index } = useParams();
-  const navigate = useNavigate();
-  const currentIndex = index ? parseInt(index, 10) : 0;
-
-  const closePopup = () => navigate("/", { replace: true });
-
-  const showPrevImage = () => {
-    if (currentIndex > 0) {
-      navigate(`/image/${currentIndex - 1}`);
-    }
-  };
-
-  const showNextImage = () => {
-    if (currentIndex < normal_images.length - 1) {
-      navigate(`/image/${currentIndex + 1}`);
-    }
-  };
-
-  React.useEffect(() => {
-    const handleKeyDown = (event: { key: string }) => {
-      if (event.key === "ArrowLeft" && currentIndex > 0) {
-        showPrevImage();
-      } else if (
-        event.key === "ArrowRight" &&
-        currentIndex < normal_images.length - 1
-      ) {
-        showNextImage();
-      } else if (event.key === "Escape") {
-        closePopup();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [currentIndex]);
-
-  return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-75"
-      onClick={closePopup}
-    >
-      <button
-        className="absolute right-4 top-4 text-2xl text-white"
-        onClick={closePopup}
-      >
-        &times;
-      </button>
-      {currentIndex > 0 && (
-        <button
-          className="absolute left-2 top-1/2 -translate-y-1/2 transform text-5xl text-white"
-          onClick={(e) => {
-            e.stopPropagation();
-            showPrevImage();
-          }}
-        >
-          &#8249;
-        </button>
-      )}
-      <img
-        className="max-h-screen max-w-full rounded-lg"
-        src={normal_images[currentIndex]}
-        alt={`Popup Image ${currentIndex + 1}`}
-        onClick={(event) => event.stopPropagation()}
-      />
-      {currentIndex < normal_images.length - 1 && (
-        <button
-          className="absolute right-2 top-1/2 -translate-y-1/2 transform text-5xl text-white"
-          onClick={(e) => {
-            e.stopPropagation();
-            showNextImage();
-          }}
-        >
-          &#8250;
-        </button>
-      )}
-    </div>
-  );
-};
 
 export default App;
