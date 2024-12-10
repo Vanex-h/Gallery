@@ -150,7 +150,7 @@ const App = () => {
 
 // Layout Component for Header and Navigation
 const Layout = () => (
-  <div className="container relative mx-auto p-4">
+  <div className="container mx-auto p-4">
     <header className="flex items-center justify-between border-b border-gray-300 bg-white p-4 text-black">
       <div className="flex items-center space-x-4">
         <Link to="/">
