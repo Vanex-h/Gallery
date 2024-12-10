@@ -1,11 +1,11 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   Link,
-  Outlet
+  Outlet,
 } from "react-router-dom";
 import { FaEnvelope, FaPhone, FaHome } from "react-icons/fa"; // Import icons
 import emailjs from "emailjs-com"; // Import emailjs
@@ -141,7 +141,6 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Gallery />} />
         <Route path="contact" element={<Contact />} />
-        {/* <Route path="image/:index" element={<ImagePopup />} /> */}
       </Route>,
     ),
   );
@@ -151,7 +150,7 @@ const App = () => {
 
 // Layout Component for Header and Navigation
 const Layout = () => (
-  <div className="container mx-auto p-4">
+  <div className="container relative mx-auto p-4">
     <header className="flex items-center justify-between border-b border-gray-300 bg-white p-4 text-black">
       <div className="flex items-center space-x-4">
         <Link to="/">
@@ -298,7 +297,12 @@ const Gallery = () => {
   return (
     <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
       {bw_images.map((imageUrl, index) => (
-        <ImageModal image={imageUrl} normal_image={normal_images[index]} key={imageUrl} index={index} />
+        <ImageModal
+          image={imageUrl}
+          normal_image={normal_images[index]}
+          key={imageUrl}
+          index={index}
+        />
       ))}
     </div>
   );
@@ -472,10 +476,9 @@ const Contact = () => {
 };
 
 const Footer = () => (
-  <footer className=" mt-8 border-t-2 py-4 text-center">
+  <footer className="mt-8 border-t-2 py-4 text-center">
     <p>Made with 🖤 by Vanessa</p>
   </footer>
 );
-
 
 export default App;
